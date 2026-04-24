@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -18,7 +19,8 @@ public class TicketService {
     private final TicketTypeRepository ticketTypeRepository;
     private final UserRepository userRepository;
     private final QrCodeService qrCodeService;
-    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
+    private final EmailService emailService;
 
     @Transactional
     public Ticket purchaseTicket(Long ticketTypeId) {
@@ -47,15 +49,11 @@ public class TicketService {
 
         ticket = ticketRepository.save(ticket);
 
-        // Mock payment
-        Payment payment = Payment.builder()
-                .transactionId("TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase())
-                .amount(ticketType.getPrice())
-                .status("SUCCESS")
-                .paymentDate(LocalDateTime.now())
-                .ticket(ticket)
-                .build();
-        paymentRepository.save(payment);
+        // Process Payment via PaymentService
+        paymentService.processPayment(ticket, ticketType.getPrice());
+
+        // Send Email Confirmation
+        emailService.sendTicketConfirmation(attendee, ticket);
 
         return ticket;
     }
