@@ -1,0 +1,8 @@
+node_modules/
+target/
+.mvn/
+mvnw*
+frontend/node_modules/
+backend/target/
+backend/.mvn/
+backend/mvnw*
