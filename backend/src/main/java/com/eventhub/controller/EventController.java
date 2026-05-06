@@ -27,4 +27,12 @@ public class EventController {
     public ResponseEntity<List<Event>> getMyEvents() {
         return ResponseEntity.ok(eventService.getOrganizerEvents());
     }
+
+    @PostMapping("/{eventId}/ticket-types")
+    @PreAuthorize("hasAuthority('ROLE_ORGANIZER')")
+    public ResponseEntity<com.eventhub.model.TicketType> addTicketType(
+            @PathVariable Long eventId, 
+            @RequestBody com.eventhub.model.TicketType ticketType) {
+        return ResponseEntity.ok(eventService.addTicketType(eventId, ticketType));
+    }
 }

@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByAttendee(User attendee);
     Optional<Ticket> findByTicketNumber(String ticketNumber);
+    List<Ticket> findByTicketType_Event_Id(Long eventId);
 }

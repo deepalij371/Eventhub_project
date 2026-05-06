@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eventhub.dto.PurchaseRequest;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,39 +24,52 @@ public class TicketService {
     private final EmailService emailService;
 
     @Transactional
-    public Ticket purchaseTicket(Long ticketTypeId) {
+    public List<Ticket> purchaseTicket(PurchaseRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User attendee = userRepository.findByEmail(email).orElseThrow();
 
-        TicketType ticketType = ticketTypeRepository.findById(ticketTypeId).orElseThrow();
-        if (ticketType.getSoldQuantity() >= ticketType.getTotalQuantity()) {
-            throw new RuntimeException("Tickets sold out");
+        TicketType ticketType = ticketTypeRepository.findById(request.getTicketTypeId()).orElseThrow();
+        
+        if (ticketType.getEvent().getDateTime().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Event sales have ended");
+        }
+        
+        int quantity = request.getQuantity() != null && request.getQuantity() > 0 ? request.getQuantity() : 1;
+
+        if (ticketType.getSoldQuantity() + quantity > ticketType.getTotalQuantity()) {
+            throw new RuntimeException("Not enough tickets available");
         }
 
-        ticketType.setSoldQuantity(ticketType.getSoldQuantity() + 1);
+        ticketType.setSoldQuantity(ticketType.getSoldQuantity() + quantity);
         ticketTypeRepository.save(ticketType);
 
-        String ticketNumber = "TKT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-        String qrData = qrCodeService.generateQrCodeBase64(ticketNumber);
+        List<Ticket> generatedTickets = new java.util.ArrayList<>();
 
-        Ticket ticket = Ticket.builder()
-                .ticketNumber(ticketNumber)
-                .qrCodeData(qrData)
-                .validated(false)
-                .purchaseDate(LocalDateTime.now())
-                .attendee(attendee)
-                .ticketType(ticketType)
-                .build();
+        for (int i = 0; i < quantity; i++) {
+            String ticketNumber = "TKT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+            String qrData = qrCodeService.generateQrCodeBase64(ticketNumber);
 
-        ticket = ticketRepository.save(ticket);
+            Ticket ticket = Ticket.builder()
+                    .ticketNumber(ticketNumber)
+                    .qrCodeData(qrData)
+                    .validated(false)
+                    .purchaseDate(LocalDateTime.now())
+                    .attendee(attendee)
+                    .ticketType(ticketType)
+                    .build();
 
-        // Process Payment via PaymentService
-        paymentService.processPayment(ticket, ticketType.getPrice());
+            ticket = ticketRepository.save(ticket);
+            
+            // Process Payment via PaymentService
+            paymentService.processPayment(ticket, ticketType.getPrice(), request.getPaymentId(), request.getPaymentMethod());
 
-        // Send Email Confirmation
-        emailService.sendTicketConfirmation(attendee, ticket);
+            // Send Email Confirmation
+            emailService.sendTicketConfirmation(attendee, ticket);
+            
+            generatedTickets.add(ticket);
+        }
 
-        return ticket;
+        return generatedTickets;
     }
 
     public List<Ticket> getAttendeeTickets() {

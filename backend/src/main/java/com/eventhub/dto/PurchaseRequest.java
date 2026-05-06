@@ -11,4 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PurchaseRequest {
     private Long ticketTypeId;
+    private Integer quantity;
+    private String paymentId;
+    private String paymentMethod;
 }

@@ -1,237 +1,255 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import { Plus, LayoutDashboard, FileText } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-interface TicketType {
-  id: number;
-  name: string;
-  price: number;
-  totalQuantity: number;
-  soldQuantity: number;
-}
+import Navbar from '../components/Navbar';
 
 interface Event {
   id: number;
   name: string;
-  description: string;
   venue: string;
   dateTime: string;
-  ticketTypes: TicketType[];
+  ticketTypes: { id: number; name: string; price: number; totalQuantity: number; soldQuantity: number }[];
 }
 
 const OrganizerDashboard: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  // Create Event State
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({
     name: '',
     description: '',
     venue: '',
     dateTime: '',
-    imageUrl: '',
-    ticketTypes: [{ name: 'General', price: 0, totalQuantity: 100 }]
+    ticketTypes: [],
   });
 
   useEffect(() => {
-    fetchEvents();
+    fetchMyEvents();
   }, []);
 
-  const fetchEvents = async () => {
+  const fetchMyEvents = async () => {
     try {
       const response = await api.get('/events/my-events');
       setEvents(response.data);
     } catch (err) {
-      console.error('Failed to fetch events', err);
+      console.error('Failed to fetch events');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/events', newEvent);
-      setShowCreateForm(false);
-      fetchEvents();
+      const response = await api.post('/events', newEvent);
+      setIsModalOpen(false);
+      setNewEvent({ name: '', description: '', venue: '', dateTime: '', ticketTypes: [] });
+      // Redirect to analytics/dashboard for this specific event to add tickets
+      navigate(`/organizer/dashboard/${response.data.id}`);
     } catch (err) {
-      console.error('Failed to create event', err);
-    }
-  };
-
-  const handleExport = async (eventId: number) => {
-    try {
-      const response = await api.get(`/organizer/export/${eventId}`, { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'attendees.csv');
-      document.body.appendChild(link);
-      link.click();
-    } catch (err) {
-      console.error('Failed to export CSV', err);
+      alert('Failed to create event');
     }
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">Organizer Dashboard</h1>
-          <button
-            onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+    <div className="min-h-screen bg-background-light dark:bg-background-dark flex flex-col">
+      <Navbar />
+
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-10">
+          <div>
+            <h1 className="text-3xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary text-4xl">dashboard</span>
+              Dashboard
+            </h1>
+            <p className="text-slate-500 mt-2">Manage your events, view sales, and add ticket types.</p>
+          </div>
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-bold flex items-center gap-2 shadow-sm transition-colors"
           >
-            <Plus size={20} /> Create Event
+            <span className="material-symbols-outlined">add</span>
+            Create Event
           </button>
         </div>
 
-        {showCreateForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <h2 className="text-2xl font-bold mb-4">Create New Event</h2>
-              <form onSubmit={handleCreateEvent}>
-                <div className="grid grid-cols-1 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Event Name</label>
-                    <input
-                      type="text"
-                      className="w-full p-2 border rounded"
-                      value={newEvent.name}
-                      onChange={(e) => setNewEvent({ ...newEvent, name: e.target.value })}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Description</label>
-                    <textarea
-                      className="w-full p-2 border rounded"
-                      value={newEvent.description}
-                      onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Venue</label>
-                      <input
-                        type="text"
-                        className="w-full p-2 border rounded"
-                        value={newEvent.venue}
-                        onChange={(e) => setNewEvent({ ...newEvent, venue: e.target.value })}
-                      />
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <span className="material-symbols-outlined animate-spin text-4xl text-primary">progress_activity</span>
+          </div>
+        ) : events.length === 0 ? (
+          <div className="text-center py-24 bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-300 dark:border-slate-700">
+             <span className="material-symbols-outlined text-5xl text-slate-400 mb-4">event_note</span>
+             <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">No events created yet</h3>
+             <p className="text-slate-500 mb-6">Start by creating your first event to sell tickets.</p>
+             <button 
+               onClick={() => setIsModalOpen(true)}
+               className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-bold"
+             >
+               Create First Event
+             </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {events.map((event) => {
+              const eventDate = new Date(event.dateTime);
+              
+              // Calculate basic stats
+              let totalRevenue = 0;
+              let totalSold = 0;
+              let totalCapacity = 0;
+              
+              event.ticketTypes.forEach(tt => {
+                 totalSold += tt.soldQuantity;
+                 totalCapacity += tt.totalQuantity;
+                 totalRevenue += (tt.soldQuantity * tt.price);
+              });
+              
+              const progressPercentage = totalCapacity === 0 ? 0 : Math.round((totalSold / totalCapacity) * 100);
+
+              return (
+                <div key={event.id} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col overflow-hidden">
+                  <div className="p-6 border-b border-slate-200 dark:border-slate-800">
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white line-clamp-1">{event.name}</h3>
+                      <Link to={`/organizer/dashboard/${event.id}`} className="text-primary hover:text-primary/80">
+                         <span className="material-symbols-outlined">settings</span>
+                      </Link>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Date & Time</label>
-                      <input
-                        type="datetime-local"
-                        className="w-full p-2 border rounded"
-                        value={newEvent.dateTime}
-                        onChange={(e) => setNewEvent({ ...newEvent, dateTime: e.target.value })}
-                      />
+                    
+                    <div className="flex items-center gap-4 text-sm text-slate-500 mb-2">
+                       <div className="flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[16px]">calendar_month</span>
+                          <span>{eventDate.toLocaleDateString()}</span>
+                       </div>
+                       <div className="flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[16px]">location_on</span>
+                          <span className="truncate max-w-[120px]">{event.venue}</span>
+                       </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Image URL</label>
-                    <input
-                      type="text"
-                      className="w-full p-2 border rounded"
-                      value={newEvent.imageUrl}
-                      onChange={(e) => setNewEvent({ ...newEvent, imageUrl: e.target.value })}
-                    />
+                  
+                  <div className="p-6 flex-grow flex flex-col bg-slate-50 dark:bg-slate-800/50">
+                     <h4 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Performance</h4>
+                     
+                     <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                           <p className="text-xs text-slate-500 font-bold uppercase mb-1">Revenue</p>
+                           <p className="text-xl font-black text-slate-900 dark:text-white">${totalRevenue}</p>
+                        </div>
+                        <div className="bg-white dark:bg-slate-800 p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+                           <p className="text-xs text-slate-500 font-bold uppercase mb-1">Tickets Sold</p>
+                           <p className="text-xl font-black text-slate-900 dark:text-white">{totalSold} <span className="text-sm font-normal text-slate-500">/ {totalCapacity}</span></p>
+                        </div>
+                     </div>
+                     
+                     <div className="mt-auto">
+                        <div className="flex justify-between text-xs mb-2">
+                           <span className="font-semibold text-slate-700 dark:text-slate-300">Sales Progress</span>
+                           <span className="font-bold text-primary">{progressPercentage}%</span>
+                        </div>
+                        <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                           <div className="bg-primary h-full rounded-full" style={{ width: `${progressPercentage}%` }}></div>
+                        </div>
+                     </div>
                   </div>
                 </div>
+              );
+            })}
+          </div>
+        )}
+      </main>
 
-                <div className="mb-6">
-                  <h3 className="font-bold mb-2">Ticket Types</h3>
-                  {newEvent.ticketTypes.map((tt, index) => (
-                    <div key={index} className="grid grid-cols-3 gap-2 mb-2">
-                      <input
-                        placeholder="Name"
-                        className="p-2 border rounded"
-                        value={tt.name}
-                        onChange={(e) => {
-                          const updated = [...newEvent.ticketTypes];
-                          updated[index].name = e.target.value;
-                          setNewEvent({ ...newEvent, ticketTypes: updated });
-                        }}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Price"
-                        className="p-2 border rounded"
-                        value={tt.price}
-                        onChange={(e) => {
-                          const updated = [...newEvent.ticketTypes];
-                          updated[index].price = parseFloat(e.target.value);
-                          setNewEvent({ ...newEvent, ticketTypes: updated });
-                        }}
-                      />
-                      <input
-                        type="number"
-                        placeholder="Quantity"
-                        className="p-2 border rounded"
-                        value={tt.totalQuantity}
-                        onChange={(e) => {
-                          const updated = [...newEvent.ticketTypes];
-                          updated[index].totalQuantity = parseInt(e.target.value);
-                          setNewEvent({ ...newEvent, ticketTypes: updated });
-                        }}
-                      />
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => setNewEvent({
-                      ...newEvent,
-                      ticketTypes: [...newEvent.ticketTypes, { name: '', price: 0, totalQuantity: 0 }]
-                    })}
-                    className="text-blue-600 text-sm hover:underline"
-                  >
-                    + Add Ticket Type
-                  </button>
+      {/* Create Event Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col max-h-[90vh]">
+            <div className="flex justify-between items-center p-4 sm:p-6 border-b border-slate-200 dark:border-slate-800">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">add_circle</span>
+                Create New Event
+              </h3>
+              <button 
+                onClick={() => setIsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            
+            <div className="p-4 sm:p-6 overflow-y-auto">
+              <form id="create-event-form" onSubmit={handleCreateEvent} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Event Name</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                    placeholder="e.g., Summer Music Festival"
+                    value={newEvent.name}
+                    onChange={(e) => setNewEvent({...newEvent, name: e.target.value})}
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Venue</label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors"
+                    placeholder="e.g., Grand Arena, Downtown"
+                    value={newEvent.venue}
+                    onChange={(e) => setNewEvent({...newEvent, venue: e.target.value})}
+                  />
                 </div>
 
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowCreateForm(false)}
-                    className="px-4 py-2 border rounded hover:bg-gray-100"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  >
-                    Create Event
-                  </button>
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    required
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors [color-scheme:light] dark:[color-scheme:dark]"
+                    value={newEvent.dateTime}
+                    onChange={(e) => setNewEvent({...newEvent, dateTime: e.target.value})}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1">Description</label>
+                  <textarea
+                    required
+                    rows={4}
+                    className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white rounded-lg px-4 py-2.5 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors resize-none"
+                    placeholder="Tell attendees about this event..."
+                    value={newEvent.description}
+                    onChange={(e) => setNewEvent({...newEvent, description: e.target.value})}
+                  />
                 </div>
               </form>
             </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => (
-            <div key={event.id} className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-xl font-bold mb-2">{event.name}</h3>
-              <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
-              <div className="text-sm mb-4">
-                <p><strong>Venue:</strong> {event.venue}</p>
-                <p><strong>Date:</strong> {new Date(event.dateTime).toLocaleString()}</p>
-              </div>
-              <div className="flex justify-between items-center mt-4 pt-4 border-t">
-                <button
-                  onClick={() => handleExport(event.id)}
-                  className="flex items-center gap-1 text-sm text-green-600 hover:underline"
-                >
-                  <FileText size={16} /> Export CSV
-                </button>
-                <Link to={`/organizer/dashboard/${event.id}`} className="flex items-center gap-1 text-sm text-blue-600 hover:underline">
-                  <LayoutDashboard size={16} /> Analytics
-                </Link>
-              </div>
+            
+            <div className="p-4 sm:p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-end gap-3">
+               <button 
+                 type="button"
+                 onClick={() => setIsModalOpen(false)}
+                 className="px-5 py-2.5 rounded-lg font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+               >
+                 Cancel
+               </button>
+               <button 
+                 type="submit"
+                 form="create-event-form"
+                 className="bg-primary hover:bg-primary/90 text-white px-6 py-2.5 rounded-lg font-bold shadow-sm transition-colors"
+               >
+                 Create Event
+               </button>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

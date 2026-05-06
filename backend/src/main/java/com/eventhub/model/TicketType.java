@@ -1,5 +1,6 @@
 package com.eventhub.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Builder
 public class TicketType {
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,5 +30,6 @@ public class TicketType {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_id")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"ticketTypes", "hibernateLazyInitializer", "handler"})
     private Event event;
 }

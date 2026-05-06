@@ -65,4 +65,21 @@ public class EventService {
     public Event getEventById(Long id) {
         return eventRepository.findById(id).orElseThrow();
     }
+
+    @Transactional
+    public TicketType addTicketType(Long eventId, TicketType ticketType) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User organizer = userRepository.findByEmail(email).orElseThrow();
+        Event event = eventRepository.findById(eventId).orElseThrow();
+        
+        if (!event.getOrganizer().getId().equals(organizer.getId())) {
+            throw new RuntimeException("Unauthorized to modify this event");
+        }
+        
+        ticketType.setEvent(event);
+        ticketType.setSoldQuantity(0);
+        event.getTicketTypes().add(ticketType);
+        eventRepository.save(event);
+        return ticketType;
+    }
 }

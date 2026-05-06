@@ -22,7 +22,7 @@ const Home: React.FC = () => {
     return <OrganizerDashboard />;
   }
   if (user?.role === 'ROLE_STAFF') {
-      return <Navigate to="/staff/validate" />;
+    return <Navigate to="/staff/validate" />;
   }
   return <AttendeeHome />;
 };
@@ -34,8 +34,8 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-          <Route path="/event/:id" element={<PrivateRoute><EventDetails /></PrivateRoute>} />
+          <Route path="/" element={<Home />} />
+          <Route path="/event/:id" element={<EventDetails />} />
           <Route path="/my-tickets" element={<PrivateRoute><MyTickets /></PrivateRoute>} />
           <Route path="/organizer/dashboard/:eventId" element={<PrivateRoute><SalesAnalytics /></PrivateRoute>} />
           <Route path="/staff/validate" element={<PrivateRoute><StaffValidation /></PrivateRoute>} />

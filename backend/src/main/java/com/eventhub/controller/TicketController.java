@@ -16,8 +16,8 @@ public class TicketController {
     private final TicketService ticketService;
 
     @PostMapping("/purchase")
-    public ResponseEntity<Ticket> purchaseTicket(@RequestBody PurchaseRequest request) {
-        return ResponseEntity.ok(ticketService.purchaseTicket(request.getTicketTypeId()));
+    public ResponseEntity<List<Ticket>> purchaseTicket(@RequestBody PurchaseRequest request) {
+        return ResponseEntity.ok(ticketService.purchaseTicket(request));
     }
 
     @GetMapping("/my-tickets")

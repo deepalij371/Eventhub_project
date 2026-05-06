@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EventHub | Find Your Next Experience</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<nav class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between items-center h-16">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">calendar_today</span>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">EventHub</span>
+</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Explore</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Venues</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" href="#">Pricing</a>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-primary transition-colors">Login</button>
+<button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-lg shadow-primary/20 transition-all">Register</button>
+</div>
+</div>
+</div>
+</nav>
+<header class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-32">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="text-center max-w-3xl mx-auto">
+<h1 class="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white leading-tight tracking-tight mb-6">
+                    Find Your Next <span class="text-primary">Unforgettable</span> Experience
+                </h1>
+<p class="text-lg text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
+                    Discover the best events, concerts, and professional workshops happening in your city. Join thousands of attendees today.
+                </p>
+<div class="relative max-w-2xl mx-auto">
+<div class="flex flex-col sm:flex-row gap-2 p-2 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-200 dark:border-slate-800">
+<div class="flex-1 flex items-center px-4 py-2 gap-3">
+<span class="material-symbols-outlined text-slate-400">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Search events, artists, or venues" type="text"/>
+</div>
+<div class="h-10 w-px bg-slate-200 dark:bg-slate-700 hidden sm:block self-center"></div>
+<div class="flex-1 flex items-center px-4 py-2 gap-3">
+<span class="material-symbols-outlined text-slate-400">location_on</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder:text-slate-400" placeholder="Near you" type="text"/>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-bold transition-all shadow-md shadow-primary/20">
+                            Search
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-0 opacity-10 dark:opacity-20 pointer-events-none">
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-primary rounded-full blur-[100px]"></div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white">Featured Events</h2>
+<p class="text-slate-500 text-sm mt-1">Hand-picked experiences for you</p>
+</div>
+<a class="text-primary font-semibold text-sm flex items-center gap-1 hover:underline" href="#">
+                View all <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="group bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Crowd at a live music concert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHBr3G4M-F39iYgsn-IConSLDquE2S05LLGeecfx5iB56feXWHoWvPeg7E15UrTQXzepeckVkG7KXtFIF5FYXphBh0EjRej9vZlsKmVDKyFmqnCKqKAYzJ3M5htiWXlAK1YrpXWfWEXoiOMRXYLa5I1hxQ4mcTps9WWgMtv9fddAQCTboQHjtPLp2kzm4dYMSQVMBooP8NbZxuLCFw89qwyDxcEjWqgbkK4QQO4mpD-NreaCUkqdYtLYeiAG10E7bCXtXHJIQm7tTR"/>
+<div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-3 py-1 rounded-lg text-center shadow-md">
+<span class="block text-xs font-bold uppercase text-primary">Aug</span>
+<span class="block text-lg font-black text-slate-900 dark:text-white">24</span>
+</div>
+<button class="absolute top-4 right-4 p-2 bg-white/90 dark:bg-slate-900/90 rounded-full text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">Festival</span>
+<span class="text-slate-400 text-[10px]">• 5k+ attending</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 line-clamp-1">Summer Beats Festival 2024</h3>
+<div class="space-y-2 mb-6">
+<div class="flex items-center text-sm text-slate-500 dark:text-slate-400 gap-2">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span>Downtown Arena, Los Angeles</span>
+</div>
+<div class="flex items-center text-sm text-slate-500 dark:text-slate-400 gap-2">
+<span class="material-symbols-outlined text-lg">schedule</span>
+<span>Starts at 6:00 PM</span>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="text-xs text-slate-400 block uppercase font-bold">From</span>
+<span class="text-xl font-black text-slate-900 dark:text-white">$45.00</span>
+</div>
+<button class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors">
+                            Book Now
+                        </button>
+</div>
+</div>
+</div>
+<div class="group bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Tech conference speaker on stage" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDoYZSWu0Q2Oq-KXV-pfUwrHmcVjMvQtWRE-Z42psENvjrcICyuj83-_w9ULzgEXX6XF6wrLYXU1u_W9VopMCs1mT8nDZn1WPqyxl0ZA7NLn1blLcUbqeTXsUDkde_x2ldW-PrOfyUC-5kYcN4abruGrk36Q5ChsHOeK24DK2Z_yabHn_x0MlVsw1zuh-AYBk_uCAK5Bt1-PNlEqM4mTVDODUFh-WyZwB7YUNzPEVN5cU0tElnoR69cFGbTWwHMOXBAF1yWszvfpq9d"/>
+<div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-3 py-1 rounded-lg text-center shadow-md">
+<span class="block text-xs font-bold uppercase text-primary">Sep</span>
+<span class="block text-lg font-black text-slate-900 dark:text-white">12</span>
+</div>
+<button class="absolute top-4 right-4 p-2 bg-white/90 dark:bg-slate-900/90 rounded-full text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">Conference</span>
+<span class="text-slate-400 text-[10px]">• 1.2k+ attending</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 line-clamp-1">NextGen Tech Summit</h3>
+<div class="space-y-2 mb-6">
+<div class="flex items-center text-sm text-slate-500 dark:text-slate-400 gap-2">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span>Silicon Valley Expo Center</span>
+</div>
+<div class="flex items-center text-sm text-slate-500 dark:text-slate-400 gap-2">
+<span class="material-symbols-outlined text-lg">schedule</span>
+<span>All-day event</span>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="text-xs text-slate-400 block uppercase font-bold">From</span>
+<span class="text-xl font-black text-slate-900 dark:text-white">$120.00</span>
+</div>
+<button class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors">
+                            Book Now
+                        </button>
+</div>
+</div>
+</div>
+<div class="group bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col">
+<div class="relative h-56 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-alt="Rooftop party with city view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6zIIG4ze2oXeJLo_4ZVhi3RDJzQNv9-quL68xChj9q6t3ob4cvAXcYIWqUHVFtDTt-MSMMULwuhDz9d8f337DEYSuRNLbadmXhuJSTJiJ2_wW_2lImxpoSjHpQ0Jxo-93gR6GVEZB0jNn815_-tMNZGn8Hc0ZhubBc6md-1y_p5RHydzsaVa3Cgr1-2SJ6Cej1hkXniSROavFUg8DKSEwNvXxUKL4uT2Yo8fXtv4PAEslwz3Xw1GOv0f9z5yKoMzR4IaTj-RtvjMa"/>
+<div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-3 py-1 rounded-lg text-center shadow-md">
+<span class="block text-xs font-bold uppercase text-primary">Sep</span>
+<span class="block text-lg font-black text-slate-900 dark:text-white">30</span>
+</div>
+<button class="absolute top-4 right-4 p-2 bg-white/90 dark:bg-slate-900/90 rounded-full text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">favorite</span>
+</button>
+</div>
+<div class="p-5 flex-1 flex flex-col">
+<div class="flex items-center gap-2 mb-2">
+<span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">Nightlife</span>
+<span class="text-slate-400 text-[10px]">• 500+ attending</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 line-clamp-1">Skyline Rooftop Party</h3>
+<div class="space-y-2 mb-6">
+<div class="flex items-center text-sm text-slate-500 dark:text-slate-400 gap-2">
+<span class="material-symbols-outlined text-lg">location_on</span>
+<span>The Highrise, Manhattan</span>
+</div>
+<div class="flex items-center text-sm text-slate-500 dark:text-slate-400 gap-2">
+<span class="material-symbols-outlined text-lg">schedule</span>
+<span>Starts at 10:00 PM</span>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<div>
+<span class="text-xs text-slate-400 block uppercase font-bold">From</span>
+<span class="text-xl font-black text-slate-900 dark:text-white">$25.00</span>
+</div>
+<button class="bg-slate-900 dark:bg-slate-100 dark:text-slate-900 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-primary dark:hover:bg-primary dark:hover:text-white transition-colors">
+                            Book Now
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 text-white mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">calendar_today</span>
+<span class="text-xl font-bold tracking-tight">EventHub</span>
+</div>
+<p class="text-sm leading-relaxed">The ultimate platform for discovering and booking unique experiences around the globe.</p>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Explore</h4>
+<ul class="space-y-4 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">All Events</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Venues</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Categories</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Support</h4>
+<ul class="space-y-4 text-sm">
+<li><a class="hover:text-primary transition-colors" href="#">Help Center</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Terms of Service</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Newsletter</h4>
+<p class="text-sm mb-4">Stay updated with the best events.</p>
+<div class="flex gap-2">
+<input class="bg-slate-800 border-none rounded-lg text-sm w-full focus:ring-1 focus:ring-primary text-white" placeholder="Email" type="email"/>
+<button class="bg-primary hover:bg-primary/90 text-white p-2 rounded-lg">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</div>
+<div class="pt-8 border-t border-slate-800 text-center text-xs">
+                © 2024 EventHub Inc. All rights reserved.
+            </div>
+</div>
+</footer>
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 py-2">
+<div class="flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-bold">Explore</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">confirmation_number</span>
+<span class="text-[10px] font-bold">Tickets</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>
